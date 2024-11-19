@@ -38,7 +38,7 @@ async def test_switch_device(
     assert len(mock_hub_configuration_prod.mock_calls) == 1
     assert len(mock_hub_status_prod_dimmer.mock_calls) == 2
 
-    device_entry = device_registry.async_get_device(identifiers={(DOMAIN, "97358")})
+    device_entry = device_registry.async_get_device(identifiers={(DOMAIN, "23746")})
     assert device_entry is not None
     assert device_entry == snapshot
 

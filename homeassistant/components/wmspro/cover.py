@@ -5,7 +5,6 @@ from __future__ import annotations
 from datetime import timedelta
 from typing import Any
 
-from wmspro.destination import Destination
 from wmspro.const import (
     WMS_WebControl_pro_API_actionDescription,
     WMS_WebControl_pro_API_actionType,
@@ -15,7 +14,6 @@ from homeassistant.components.cover import (
     ATTR_POSITION,
     CoverDeviceClass,
     CoverEntity,
-    CoverEntityDescription,
     CoverEntityFeature,
 )
 from homeassistant.core import HomeAssistant
@@ -57,14 +55,16 @@ async def async_setup_entry(
 class WebControlProCover(WebControlProGenericEntity, CoverEntity):
     """Representation of a WMS based cover."""
 
-    def __init__(
-        self,
-        config_entry_id: str,
-        dest: Destination,
-        drive_type: WMS_WebControl_pro_API_actionDescription,
-    ) -> None:
-        self._drive_type = drive_type
-        super().__init__(config_entry_id, dest)()
+    _drive_type = WMS_WebControl_pro_API_actionDescription.Unknown
+
+    # def __init__(
+    #     self,
+    #     config_entry_id: str,
+    #     dest: Destination,
+    #     drive_type: WMS_WebControl_pro_API_actionDescription,
+    # ) -> None:
+    #     self._drive_type = drive_type
+    #     super().__init__(config_entry_id, dest)
 
     @property
     def current_cover_position(self) -> int | None:
@@ -86,11 +86,11 @@ class WebControlProCover(WebControlProGenericEntity, CoverEntity):
 
     async def async_open_cover(self, **kwargs: Any) -> None:
         """Open the cover."""
-        await self.async_set_cover_position(ATTR_POSITION=100)
+        await self.async_set_cover_position(**{ATTR_POSITION: 100})
 
     async def async_close_cover(self, **kwargs: Any) -> None:
         """Close the cover."""
-        await self.async_set_cover_position(ATTR_POSITION=0)
+        await self.async_set_cover_position(**{ATTR_POSITION: 0})
 
     async def async_stop_cover(self, **kwargs: Any) -> None:
         """Stop the device if in motion."""
@@ -102,27 +102,29 @@ class WebControlProCover(WebControlProGenericEntity, CoverEntity):
 
 
 class WebControlProRollerShutterBlind(WebControlProCover):
-    """Representation of a WMS based normal blind."""
+    """Representation of a WMS RollerShutterBlind based normal WMS Cover."""
 
     _attr_device_class = CoverDeviceClass.BLIND
+    _drive_type = WMS_WebControl_pro_API_actionDescription.RollerShutterBlindDrive
 
-    def __init__(self, config_entry_id: str, dest: Destination) -> None:
-        super().__init__(
-            config_entry_id,
-            dest,
-            WMS_WebControl_pro_API_actionDescription.RollerShutterBlindDrive,
-        )()
+    # def __init__(self, config_entry_id: str, dest: Destination) -> None:
+    #     super().__init__(
+    #         config_entry_id,
+    #         dest,
+    #         WMS_WebControl_pro_API_actionDescription.RollerShutterBlindDrive,
+    #     )
 
 
 class WebControlProAwning(WebControlProCover):
     """Representation of a WMS based awning."""
 
     _attr_device_class = CoverDeviceClass.AWNING
+    _drive_type = WMS_WebControl_pro_API_actionDescription.AwningDrive
 
-    def __init__(self, config_entry_id: str, dest: Destination) -> None:
-        super().__init__(
-            config_entry_id, dest, WMS_WebControl_pro_API_actionDescription.AwningDrive
-        )()
+    # def __init__(self, config_entry_id: str, dest: Destination) -> None:
+    #     super().__init__(
+    #         config_entry_id, dest, WMS_WebControl_pro_API_actionDescription.AwningDrive
+    #     )
 
     # @property
     # def current_cover_position(self) -> int | None:
@@ -152,11 +154,12 @@ class WebControlProSlat(WebControlProCover):
         | CoverEntityFeature.SET_TILT_POSITION
         | CoverEntityFeature.STOP_TILT
     )
+    _drive_type = WMS_WebControl_pro_API_actionDescription.SlatDrive
 
-    def __init__(self, config_entry_id: str, dest: Destination) -> None:
-        super().__init__(
-            config_entry_id, dest, WMS_WebControl_pro_API_actionDescription.SlatDrive
-        )()
+    # def __init__(self, config_entry_id: str, dest: Destination) -> None:
+    #     super().__init__(
+    #         config_entry_id, dest, WMS_WebControl_pro_API_actionDescription.SlatDrive
+    #     )
 
     @property
     def current_cover_tilt_position(self) -> int | None:
@@ -173,11 +176,11 @@ class WebControlProSlat(WebControlProCover):
 
     async def async_open_cover_tilt(self, **kwargs: Any) -> None:
         """Open the cover."""
-        await self.async_set_cover_tilt_position(ATTR_POSITION=100)
+        await self.async_set_cover_tilt_position(**{ATTR_POSITION: 100})
 
     async def async_close_cover_tilt(self, **kwargs: Any) -> None:
         """Close the cover."""
-        await self.async_set_cover_tilt_position(ATTR_POSITION=0)
+        await self.async_set_cover_tilt_position(**{ATTR_POSITION: 0})
 
     async def async_stop_cover_tilt(self, **kwargs: Any) -> None:
         """Stop the device if in motion."""
@@ -192,11 +195,13 @@ class WebControlProWindow(WebControlProCover):
     """Representation of a WMS based window."""
 
     _attr_device_class = CoverDeviceClass.WINDOW
+    _drive_type = WMS_WebControl_pro_API_actionDescription.WindowDrive
 
-    def __init__(self, config_entry_id: str, dest: Destination) -> None:
-        super().__init__(
-            config_entry_id, dest, WMS_WebControl_pro_API_actionDescription.WindowDrive
-        )()
+    # def __init__(self, config_entry_id: str, dest: Destination) -> None:
+    #     """Init WebControlProWindow object."""
+    #     super().__init__(
+    #         config_entry_id, dest, WMS_WebControl_pro_API_actionDescription.WindowDrive
+    #     )
 
     # @property
     # def current_cover_position(self) -> int | None:
